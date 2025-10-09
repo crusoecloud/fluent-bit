@@ -48,7 +48,7 @@ RUN echo "deb http://deb.debian.org/debian trixie-backports main" >> /etc/apt/so
     libcurl4-openssl-dev \
     libsasl2-dev \
     pkg-config \
-    libsystemd-dev/trixie-backports \
+    libsystemd-dev \
     zlib1g-dev \
     libpq-dev \
     postgresql-server-dev-all \
@@ -135,7 +135,7 @@ RUN echo "deb http://deb.debian.org/debian trixie-backports main" >> /etc/apt/so
     libsasl2-2 \
     pkg-config \
     libpq5 \
-    libsystemd0/trixie-backports \
+    libsystemd0 \
     zlib1g \
     ca-certificates \
     libatomic1 \
@@ -242,7 +242,7 @@ RUN echo "deb http://deb.debian.org/debian trixie-backports main" >> /etc/apt/so
     libsasl2-2 \
     pkg-config \
     libpq5 \
-    libsystemd0/trixie-backports \
+    libsystemd0 \
     zlib1g \
     ca-certificates \
     libatomic1 \
@@ -256,7 +256,7 @@ RUN echo "deb http://deb.debian.org/debian trixie-backports main" >> /etc/apt/so
     openssl \
     htop atop strace iotop sysstat ncdu logrotate hdparm pciutils psmisc tree pv \
     make tar flex bison \
-    libssl-dev libsasl2-dev libsystemd-dev/trixie-backports zlib1g-dev libpq-dev libyaml-dev postgresql-server-dev-all \
+    libssl-dev libsasl2-dev libsystemd-dev zlib1g-dev libpq-dev libyaml-dev postgresql-server-dev-all \
     && apt-get satisfy -y cmake "cmake (<< 4.0)" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
