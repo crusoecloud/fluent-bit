@@ -467,10 +467,8 @@ static size_t utf8_safe_truncate_pos(const char *s, size_t len, size_t max)
         return cut;
     }
 
-   /* backtrack over continuation bytes 10xxxxxx
-    * NOTE: check the last INCLUDED byte => s[cut-1], not s[cut].
-    */
-    while (cut > 0 && ((unsigned char)s[cut - 1] & 0xC0) == 0x80) {
+    /* backtrack over continuation bytes 10xxxxxx */
+    while (cut > 0 && ((unsigned char)s[cut] & 0xC0) == 0x80) {
         cut--;
     }
 
