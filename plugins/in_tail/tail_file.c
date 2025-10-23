@@ -570,7 +570,8 @@ static int process_content(struct flb_tail_file *file, size_t *bytes)
         data = (char *)flb_skip_leading_zeros_simd(data, end, &processed_bytes);
     }
 
-    if (ctx->truncate_long_lines == FLB_TRUE) {
+    if (ctx->truncate_long_lines == FLB_TRUE &&
+        file->buf_size >= ctx->buf_max_size) {
         /* Use buf_max_size as the truncation threshold */
         if (ctx->buf_max_size > 0) {
             eff_max = ctx->buf_max_size - 1;
@@ -585,8 +586,7 @@ static int process_content(struct flb_tail_file *file, size_t *bytes)
         }
 
         nl = memchr(data, '\n', window);
-        if (file->buf_size >= ctx->buf_max_size &&
-            nl == NULL && eff_max > 0 && dec_len >= eff_max) {
+        if (nl == NULL && eff_max > 0 && dec_len >= eff_max) {
             if (file->skip_next == FLB_TRUE) {
                 bytes_override = (original_len > 0) ? original_len : file->buf_len;
                 goto truncation_end;
