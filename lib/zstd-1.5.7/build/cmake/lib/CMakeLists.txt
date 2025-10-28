@@ -137,6 +137,23 @@ if (ZSTD_BUILD_SHARED)
 endif ()
 if (ZSTD_BUILD_STATIC)
     add_library(libzstd_static STATIC ${Sources} ${Headers})
+    #
+    # Fluent Bit links libzstd statically while also loading libsystemd at
+    # runtime.  On platforms such as RHEL10, libsystemd itself links against
+    # the system's shared libzstd.  When our binary exports the bundled zstd
+    # symbols with default visibility the dynamic linker may resolve
+    # libsystemd's zstd calls to the bundled implementation instead of the
+    # system one.  The ABI between the two releases is not compatible which
+    # ultimately leads to crashes when libsystemd frees its own ZSTD
+    # structures via our symbols.
+    #
+    # Hide all symbols from the static archive so that the bundled library
+    # cannot interpose the system copy used by libsystemd (or any other
+    # consumer).  This mirrors how we build the static archive on other
+    # platforms and keeps the symbols internal to fluent-bit.
+    set_target_properties(libzstd_static PROPERTIES
+        C_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN YES)
     target_include_directories(libzstd_static INTERFACE $<BUILD_INTERFACE:${PUBLIC_INCLUDE_DIRS}>)
     list(APPEND library_targets libzstd_static)
     if (ZSTD_MULTITHREAD_SUPPORT)
