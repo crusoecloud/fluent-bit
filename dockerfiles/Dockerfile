@@ -66,7 +66,7 @@ COPY . ./
 FROM builder-base AS builder
 WORKDIR /src/fluent-bit/build/
 RUN cmake -DFLB_RELEASE=On \
-    -DFLB_JEMALLOC=On \
+    -DFLB_JEMALLOC=Off \
     -DFLB_TLS=On \
     -DFLB_SHARED_LIB=Off \
     -DFLB_EXAMPLES=Off \
