@@ -5,6 +5,12 @@ on:
     branches:
       - crusoe-**
   workflow_dispatch:
+    inputs:
+      container_version:
+        required: true
+        type: string
+        default: "latest"
+        description: "Version of the container to release"
 permissions:
   contents: write
   attestations: write
@@ -34,10 +40,26 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Determine container version
+        run: |
+          if [ "${{ inputs.container_version }}" == "latest" ]; then
+            BRANCH_NAME="${{ github.ref_name }}"
+            if [ -z "$BRANCH_NAME" ]; then
+              if [ "${{ github.event_name }}" == "pull_request" ]; then
+                BRANCH_NAME="${{ github.head_ref }}"
+              else
+                BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+              fi
+            fi
+            echo "container_version=${BRANCH_NAME}" >> $GITHUB_ENV
+          else
+            echo "container_version=${{ inputs.container_version }}" >> $GITHUB_ENV
+          fi
+
       - name: Push image to GitHub Container Registry
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/crusoecloud/fluent-bit:${{ env.GITHUB_REF_NAME }}
+          tags: ghcr.io/crusoecloud/fluent-bit:${{ env.container_version }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
