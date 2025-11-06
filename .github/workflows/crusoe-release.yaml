@@ -62,4 +62,4 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/crusoecloud/fluent-bit:${{ env.container_version }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
